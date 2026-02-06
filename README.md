@@ -37,12 +37,26 @@ WhatsApp Message → Switch (Text/Audio) → AI Agent → Calendar/Sheets/Gmail 
 1. **WhatsApp Trigger**: Receives incoming messages
 2. **Message Router**: Separates text and voice messages
 3. **Voice Processor**: Transcribes and cleans audio messages
-4. **AI Agent**: Powered by Google Gemini with tool access to:
+4. **AI Agent**: Powered by **Google Gemini** or **OpenAI GPT** (your choice) with tool access to:
    - Google Calendar (read, create, delete events)
    - Google Sheets (read, add, update rows)
    - Gmail (send confirmations)
 5. **Memory System**: Maintains conversation context per user
 6. **Response Handler**: Sends formatted replies via WhatsApp
+
+### 🤖 AI Model Options
+
+This workflow supports **two AI providers** - choose the one that fits your needs:
+
+| Feature | Google Gemini | OpenAI GPT |
+|---------|---------------|------------|
+| **Cost** | ⭐⭐⭐ Free tier available | 💰 Pay per token |
+| **Speed** | ⚡ Very fast | ⚡ Fast |
+| **Quality** | ✅ Excellent | ✅ Excellent |
+| **Tool Calling** | ✅ Native support | ✅ Native support |
+| **Best For** | Budget-conscious, high volume | Advanced reasoning, complex tasks |
+
+**Default**: The workflow comes configured with **Google Gemini** for cost-effectiveness, but you can easily switch to **OpenAI GPT-4** or **GPT-4o-mini**.
 
 ## 📋 Prerequisites
 
@@ -54,8 +68,10 @@ Before setting up this workflow, ensure you have:
   - Google Calendar API
   - Google Sheets API
   - Gmail API
-- **Google Gemini API** key
-- **OpenAI API** key (for voice transcription)
+- **AI Provider** (choose one or both):
+  - **Option A**: [Google Gemini API](https://ai.google.dev/) key (Recommended - Free tier available)
+  - **Option B**: [OpenAI API](https://platform.openai.com/) key (GPT-4, GPT-4o, or GPT-4o-mini)
+- **OpenAI API** key (for voice transcription with Whisper - required if using voice messages)
 
 ## 🚀 Installation
 
@@ -89,8 +105,23 @@ For each Google service (Calendar, Sheets, Gmail):
 3. Authorize access
 
 #### AI Models
+Choose your preferred AI provider:
+
+**Option A: Google Gemini (Recommended)**
 - **Google Gemini**: Add your Gemini API key
+  - Get it from: https://ai.google.dev/
+  - Models: `gemini-pro`, `gemini-1.5-flash`, `gemini-1.5-pro`
+  - Free tier: 60 requests per minute
+
+**Option B: OpenAI GPT**
 - **OpenAI**: Add your OpenAI API key
+  - Get it from: https://platform.openai.com/api-keys
+  - Models: `gpt-4o-mini` (recommended), `gpt-4o`, `gpt-4-turbo`
+  - Pricing: Pay per token
+
+**For Voice Transcription (Required if using voice messages)**
+- **OpenAI Whisper**: Add your OpenAI API key (same as above)
+  - Model: `whisper-1`
 
 ### 4. Create Google Sheet
 
@@ -132,6 +163,45 @@ Update the time zone from "Pakistan Time Zone" to your local timezone.
 1. Review all credential connections
 2. Test with a sample WhatsApp message
 3. Activate the workflow
+
+---
+
+## 🔄 Switching Between AI Models
+
+The workflow is pre-configured with **Google Gemini**, but you can easily switch to **OpenAI GPT**:
+
+### To Switch to OpenAI GPT:
+
+1. **Open the AI Agent node**
+2. **Disconnect the Google Gemini Chat Model** node
+3. **Add an OpenAI Chat Model** node:
+   - Type: `@n8n/n8n-nodes-langchain.lmChatOpenAi`
+   - Configure with your OpenAI credentials
+   - Select model: `gpt-4o-mini` (recommended) or `gpt-4o`
+4. **Connect it to the AI Agent** node (ai_languageModel input)
+5. **Save and test**
+
+### To Use Both (Advanced):
+
+You can create two separate workflows:
+- One for **Gemini** (free tier, high volume)
+- One for **GPT-4o** (complex queries, premium service)
+
+Use a Switch node to route based on message complexity or customer tier.
+
+---
+
+## 💰 Cost Comparison
+
+| Scenario | Google Gemini | OpenAI GPT-4o-mini | OpenAI GPT-4o |
+|----------|---------------|-------------------|---------------|
+| **100 appointments/month** | Free | ~$2-3 | ~$8-12 |
+| **1,000 appointments/month** | Free* | ~$20-30 | ~$80-120 |
+| **Voice messages (100)** | N/A | ~$5 (Whisper) | ~$5 (Whisper) |
+
+*Google Gemini free tier: 60 requests/minute, 1,500 requests/day
+
+**Recommendation**: Start with **Google Gemini** (free), switch to **GPT-4o-mini** if you need more advanced features.
 
 ## 💬 Usage
 
@@ -291,7 +361,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [n8n](https://n8n.io/) - Workflow automation platform
-- [Google Gemini](https://deepmind.google/technologies/gemini/) - AI language model
+- [Google Gemini](https://ai.google.dev/) - AI language model (default)
+- [OpenAI GPT](https://openai.com/) - Alternative AI language model
 - [OpenAI Whisper](https://openai.com/research/whisper) - Speech recognition
 - [WhatsApp Business API](https://business.whatsapp.com/) - Messaging platform
 
@@ -299,7 +370,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions or issues:
 - Open an [Issue](https://github.com/yourusername/ai-whatsapp-appointment-setter/issues)
-- Contact: your-email@example.com
+- Contact: hassankhann900@gmail.com
 
 ## 🗺️ Roadmap
 
@@ -314,6 +385,6 @@ For questions or issues:
 
 ---
 
-**Made with ❤️ by [Your Name]**
+**Made with ❤️ by Muhammad Hassan**
 
 ⭐ Star this repo if you find it helpful!
